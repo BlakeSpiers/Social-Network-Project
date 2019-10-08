@@ -1,8 +1,13 @@
-const express = require('express')
-const app = express()
+const fs = require('fs');
+const fileName = "target.txt";
 
-app.get('/', (req, res) => {
-	res.send("hello from express")
-})
+const errorHandler = (err) => console.log(err);
 
-app.listen(3000)
+const dataHandler = (data) => console.log(data.toString());
+
+fs.readFile(fileName, (err, data) => {
+	if(err)	errorHandler(err);
+	dataHandler(data);
+});
+
+console.log("Node js async programming ... ?");
