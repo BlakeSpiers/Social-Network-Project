@@ -1,9 +1,14 @@
 const express = require('express');
 const app = express();
+const morgan = require("morgan");
 
-app.get("/", (req, res) => {
-    res.send("Hello world from node js");
-});
+// bring in posts
+const postRoutes = require('./routes/post');
+
+// middleware
+app.use(morgan("dev"));
+
+app.use("/", postRoutes);
 
 const port = 8080;
 
