@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const uuid1 = require('uuid/v1');
+const uuidv1 = require('uuid/v1');
+const crypto = require('crypto');
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -54,6 +55,7 @@ const userSchema = new mongoose.Schema({
             .update(password)
             .digest('hex');
          } catch (err){
+             console.log(`Error: ${err}`);
             return "";
          }
      }
