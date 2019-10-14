@@ -8,7 +8,7 @@ exports.userById = (req, res, next, id) => {
                 error: "User not found"
             })
         }
-        req.profile = user; //adds profile objct in req with user info
+        req.profile = user; //adds profile object in req with user info
         next();
     });
 }
@@ -50,5 +50,17 @@ exports.updateUser = (req, res, next) => {
         user.hashed_password = undefined;
         user.salt = undefined;
         res.json({user});
+    });
+};
+
+exports.deleteUser = (req, res, next) => {
+    let user = req.profile;
+    user.remove((err, user) => {
+        if(err){
+            return res.status(400).json({
+                error: err
+            });
+        }
+        res.json({ message: "User deleted successfully"});
     });
 };
