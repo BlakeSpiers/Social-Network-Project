@@ -3,7 +3,9 @@ const formidable = require("formidable");
 const fs = require("fs");
 
 exports.getPosts = (req, res) => {
-    const posts = Post.find().select("_id title body")
+    const posts = Post.find()
+    .populate("postedBy", "_id name")
+    .select("_id title body")
     .then((posts) => {
         res.json({posts})
     })
@@ -22,7 +24,7 @@ exports.createPost = (req, res, next) => {
         req.profile.hashed_password = undefined;
         req.profile.salt = undefined;
         post.postedBy = req.profile;
-        
+
         if(files.photo){
             post.photo.data = fs.readFileSync(files.photo.path);
             post.photo.contentType = files.photo.type;
