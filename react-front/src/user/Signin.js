@@ -1,14 +1,13 @@
 import React, { Component } from 'react'
 
-export default class Signup extends Component {
+export default class Signin extends Component {
     constructor() {
         super()
         this.state = {
-            name: "",
             email: "",
             password: "",
             error: "",
-            open: false
+            redirectToReferer: false
         }
     }
 
@@ -19,27 +18,23 @@ export default class Signup extends Component {
 
     clickSubmit = event => {
         event.preventDefault()
-        const {name, email, password} = this.state
+        const {email, password} = this.state
         const user = {
-            name,
             email,
             password
         }
-        this.signup(user)
+        this.signin(user)
         .then(data => {
             if(data.error) this.setState({error: data.error})
-                else this.setState({
-                    name: "",
-                    email: "",
-                    password: "",
-                    error: "",
-                    open: true
-                })
+                else{
+                    //authenticate user
+                    //redirect
+                }
         })
     }
 
-    signup = user => {
-        return fetch("http://localhost:8080/signup", {
+    signin = user => {
+        return fetch("http://localhost:8080/signin", {
             method: "POST",
             headers: {
                 Accept: "application/json",
@@ -54,26 +49,20 @@ export default class Signup extends Component {
     }
 
     render() {
-        const {name, email, password, error, open} = this.state
+        const {email, password, error} = this.state
         return (
             <div className="container">
-                <h2 className="mt-5 mb-5">Signup</h2>  
+                <h2 className="mt-5 mb-5">SignIn</h2>  
 
-                <div className="alert alert-danger" style={{display: error ? "" : "none"}}>{error}</div>    
+                <div className="alert alert-danger" style={{display: error ? "" : "none"}}>{error}</div>       
 
-                <div className="alert alert-info" style={{display: open ? "" : "none"}}>New account has been succefully created. Please sign in.</div>     
-
-                {this.signupForm(name, email, password)}
+                {this.signinForm(email, password)}
             </div>
         )
     }
 
-    signupForm(name, email, password) {
+    signinForm(email, password) {
         return <form>
-            <div className="form-group">
-                <label className="text-muted">Name</label>
-                <input onChange={this.handleChange("name")} type="text" className="form-control" value={name} />
-            </div>
             <div className="form-group">
                 <label className="text-muted">Email</label>
                 <input onChange={this.handleChange("email")} type="email" className="form-control" value={email} />
