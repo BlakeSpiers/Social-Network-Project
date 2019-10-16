@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import {Redirect} from 'react-router-dom'
 
 export default class Signin extends Component {
     constructor() {
@@ -7,7 +8,8 @@ export default class Signin extends Component {
             email: "",
             password: "",
             error: "",
-            redirectToReferer: false
+            redirectToReferer: false,
+            loading: false
         }
     }
 
@@ -16,8 +18,16 @@ export default class Signin extends Component {
         this.setState({[name]: event.target.value})
     }
 
+    authenticate(jwt, next) {
+        if(typeof window !== "undefined"){
+            localStorage.setItem("jwt", JSON.stringify(jwt))
+            next()
+        }
+    }
+
     clickSubmit = event => {
         event.preventDefault()
+        this.setState({loading: true})
         const {email, password} = this.state
         const user = {
             email,
@@ -25,9 +35,12 @@ export default class Signin extends Component {
         }
         this.signin(user)
         .then(data => {
-            if(data.error) this.setState({error: data.error})
+            if(data.error) this.setState({error: data.error, loading: false})
                 else{
                     //authenticate user
+                    this.authenticate(data, () => {
+                        this.setState({redirectToReferer: true})
+                    })
                     //redirect
                 }
         })
@@ -49,12 +62,17 @@ export default class Signin extends Component {
     }
 
     render() {
-        const {email, password, error} = this.state
+        const {email, password, error, redirectToReferer, loading} = this.state
+
+        if(redirectToReferer) return <Redirect to="/" />
+        
         return (
             <div className="container">
-                <h2 className="mt-5 mb-5">SignIn</h2>  
+                <h2 className="mt-5 mb-5">Sign In</h2>  
 
-                <div className="alert alert-danger" style={{display: error ? "" : "none"}}>{error}</div>       
+                <div className="alert alert-danger" style={{display: error ? "" : "none"}}>{error}</div>   
+
+                {loading ? <div className="jumbotron text-center"><h2>Loading...</h2></div> : "" }
 
                 {this.signinForm(email, password)}
             </div>
