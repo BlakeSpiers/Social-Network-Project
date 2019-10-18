@@ -25,7 +25,6 @@ const Menu = ({history}) => (
                 </>                
             )}
 
-            
             {isAuthenticated() && (
                 <>
                     <li className="nav-item">
