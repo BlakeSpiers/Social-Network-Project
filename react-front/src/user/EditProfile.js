@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {isAuthenticated} from "../auth"
-import { read, update } from './apiUser'
+import { read, update, updateUser } from './apiUser'
 import {Redirect} from 'react-router-dom'
 import DefaultProfile from "../images/avatar.jpg"
 
@@ -41,24 +41,24 @@ export default class EditProfile extends Component {
     isValid = () => {
         const {name, email, password, fileSize} = this.state
         if(fileSize > 100000){
-            this.setState({error: "File size should be less than 100KB"})
+            this.setState({error: "File size should be less than 100KB", loading: false})
             return false
         }
         if(name.length === 0){
-            this.setState({error: "Name is required"})
+            this.setState({error: "Name is required", loading: false})
             return false
         }
         if(!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)){
-            this.setState({error: "A valid email is required"})
+            this.setState({error: "A valid email is required", loading: false})
             return false
         }
         if(password.length >= 1){
             if(password.length <= 5){
-                this.setState({error: "Password must be at least 6 characters long"})
+                this.setState({error: "Password must be at least 6 characters long", loading: false})
                 return false
             }
             if(!/\d/.test(password)){
-                this.setState({error: "Password must contain at least one number"})
+                this.setState({error: "Password must contain at least one number", loading: false})
                 return false
             }
         }
@@ -75,16 +75,18 @@ export default class EditProfile extends Component {
 
     clickSubmit = event => {
         event.preventDefault()
+        this.setState({loading: true})
         if(this.isValid()){   
-            this.setState({loading: true})
             const userId = this.props.match.params.userId
             const token = isAuthenticated().token
             update(userId, token, this.userData)
             .then(data => {
                 if(data.error) this.setState({error: data.error})
-                    else this.setState({
-                        redirectToProfile: true
+                else {
+                    updateUser(data, () => {
+                        this.setState({redirectToProfile: true})
                     })
+                }
             })
         }
     }
