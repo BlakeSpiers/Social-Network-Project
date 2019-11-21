@@ -32,10 +32,6 @@ const Menu = ({history}) => (
             {isAuthenticated() && (
                 <>
                     <li className="nav-item">
-                        <button type="button" className="btn-link nav-link" style={{cursor: "pointer", color: "#ffffff"}} onClick={() => signout(() => history.push("/"))}>Sign Out</button>
-                    </li>
-
-                    <li className="nav-item">
                         <Link className="nav-link" 
                         to={`/findpeople`} 
                         style={isActive(history, `/findpeople`)}>
@@ -49,6 +45,10 @@ const Menu = ({history}) => (
                         style={isActive(history, `/user/${isAuthenticated().user._id}`)}>
                             {`${isAuthenticated().user.name}'s profile`}
                         </Link>
+                    </li>
+
+                    <li className="nav-item">
+                        <button type="button" className="btn-link nav-link" style={{cursor: "pointer", color: "#ffffff"}} onClick={() => signout(() => history.push("/"))}>Sign Out</button>
                     </li>
                 </>
             )} 
