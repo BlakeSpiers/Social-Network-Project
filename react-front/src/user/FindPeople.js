@@ -80,7 +80,7 @@ export default class FindPeople extends Component {
                 <h2 className="mt-5 mb-5">Find People</h2>
 
                 {open && (<div className="alert alert-success"><p>{followMessage}</p></div>)}
-
+                
                 {this.renderUsers(users)}
             </div>
         )
