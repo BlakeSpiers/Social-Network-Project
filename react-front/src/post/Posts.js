@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import {list} from "./apiPost"
-import DefaultPost from "../images/avatar.jpg"
 import {Link} from 'react-router-dom'
 
 export default class Posts extends Component {
