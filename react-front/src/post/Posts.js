@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {list} from "./apiPost"
-import DefaultProfile from "../images/avatar.jpg"
+import DefaultPost from "../images/avatar.jpg"
 import {Link} from 'react-router-dom'
 
 export default class Posts extends Component {
@@ -34,11 +34,21 @@ export default class Posts extends Component {
                         <div className="card col-md-4" key={i}>
 
                             <div className="card-body">
+                                <img 
+                                    src={`${process.env.REACT_APP_API_URL}/post/photo/${post._id}`} 
+                                    alt={post.title}
+                                    onError={
+                                        i =>
+                                        (i.target.style.display="none")
+                                    }
+                                    className="img-thumbnail mb-3"
+                                    style={{height:"200px", width:"auto"}}
+                                />
                                 <h5 className="card-title">{post.title}</h5>
                                 <p className="card-text">{post.body.substring(0, 100)}</p>
                                 <br/>
                                 <p className="font-italic mark">
-                                    Posted by <Link to={{posterId}}>{posterName}</Link>
+                                    Posted by {" "} <Link to={`${posterId}`}>{posterName}</Link>
                                     {" "}
                                     on {new Date(post.created).toDateString()}
                                 </p>
