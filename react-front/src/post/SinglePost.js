@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import {singlePost} from './apiPost'
 import {Link} from 'react-router-dom'
+import { isAuthenticated } from '../auth'
 
 export default class SinglePost extends Component {
     
@@ -43,7 +44,16 @@ export default class SinglePost extends Component {
                     {" "}
                     on {new Date(post.created).toDateString()}
                 </p>
-                <Link to={`/`} className="btn btn-raised btn-primary btn-sm">Back to posts</Link>
+                <div className="d-inline-block">
+                    <Link to={`/`} className="btn btn-raised btn-primary btn-sm mr-5">Back to posts</Link>
+                    {isAuthenticated().user && isAuthenticated().user._id === post.postedBy._id && (
+                        <>
+                            <Link to={`/`} className="btn btn-raised btn-warning btn-sm mr-5">Update Post</Link>
+                            <Link to={`/`} className="btn btn-raised btn-danger btn-sm">Delete Post</Link>
+                        </>
+                    )}
+                    
+                </div>
             </div>
         )
     }
