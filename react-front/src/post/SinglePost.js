@@ -29,10 +29,10 @@ export default class SinglePost extends Component {
                 <img 
                     src={`${process.env.REACT_APP_API_URL}/post/photo/${post._id}`} 
                     alt={post.title}
-                    // onError={
-                    //     i =>
-                    //     (i.target.style.display="none")
-                    // }
+                    onError={
+                        i =>
+                        (i.target.style.display="none")
+                    }
                     className="img-thumbnail mb-3"
                     style={{height:"300px", width:"100%`", objectFit: "cover"}}
                 />
@@ -54,7 +54,9 @@ export default class SinglePost extends Component {
         return (
             <div className="container">
                 <h2 className="display-2 mt-5 mb-5">{post.title}</h2>
-                {this.renderPost(post)}
+
+                {!post ? <div className="jumbotron text-center"><h2>Loading...</h2></div> : this.renderPost(post) }
+
             </div>
         )
     }
