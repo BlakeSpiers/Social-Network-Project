@@ -68,7 +68,7 @@ export default class SinglePost extends Component {
                     <Link to={`/`} className="btn btn-raised btn-primary btn-sm mr-5">Back to posts</Link>
                     {isAuthenticated().user && isAuthenticated().user._id === post.postedBy._id && (
                         <>
-                            <Link to={`/`} className="btn btn-raised btn-warning btn-sm mr-5">Update Post</Link>
+                            <Link to={`/post/edit/${post._id}`} className="btn btn-raised btn-warning btn-sm mr-5">Update Post</Link>
                             <button onClick={this.deleteConfirmed} className="btn btn-raised btn-danger btn-sm">Delete Post</button>
                         </>
                     )}
