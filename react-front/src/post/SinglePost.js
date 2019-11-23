@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
-import {singlePost} from './apiPost'
-import {Link} from 'react-router-dom'
+import {singlePost, remove} from './apiPost'
+import {Link, Redirect} from 'react-router-dom'
 import { isAuthenticated } from '../auth'
 
 export default class SinglePost extends Component {
     
     state = {
-        post: ""
+        post: "",
+        redirectToHome: false
     }
 
     componentDidMount = () => {
@@ -17,6 +18,18 @@ export default class SinglePost extends Component {
                 console.log(data.error)
             } else {
                 this.setState({post: data})  
+            }
+        })
+    }
+
+    deletePost = () => {
+        const postId = this.props.match.params.postId
+        const token = isAuthenticated().token
+        remove(postId, token).then(data => {
+            if(data.error){
+                console.log(data.error)
+            } else {
+                this.setState({redirectToHome: true})
             }
         })
     }
@@ -49,7 +62,7 @@ export default class SinglePost extends Component {
                     {isAuthenticated().user && isAuthenticated().user._id === post.postedBy._id && (
                         <>
                             <Link to={`/`} className="btn btn-raised btn-warning btn-sm mr-5">Update Post</Link>
-                            <Link to={`/`} className="btn btn-raised btn-danger btn-sm">Delete Post</Link>
+                            <button onClick={this.deletePost} className="btn btn-raised btn-danger btn-sm">Delete Post</button>
                         </>
                     )}
                     
@@ -59,6 +72,11 @@ export default class SinglePost extends Component {
     }
 
     render() {
+
+        if(this.state.redirectToHome){
+            return <Redirect to={`/`} />
+        }
+
         const {post} = this.state
         
         return (
