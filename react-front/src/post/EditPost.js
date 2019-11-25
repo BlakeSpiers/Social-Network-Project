@@ -101,8 +101,23 @@ export default class EditPost extends Component {
         </form>
     )
 
+    renderImage = (id, title) => {
+        return(
+            <img 
+                src={`${process.env.REACT_APP_API_URL}/post/photo/${id}?${new Date().getTime()}`} 
+                alt={title}
+                onError={
+                    i =>
+                    (i.target.style.display="none")
+                }
+                className="img-thumbnail mb-3"
+                style={{height:"300px", width:"100%`", objectFit: "cover"}}
+            />
+        )
+    }
+
     render() {
-        const {title, body, redirectToProfile} = this.state
+        const {id, title, body, redirectToProfile} = this.state
 
         if(redirectToProfile){
             return <Redirect to={`/user/${isAuthenticated().user._id}`} />
@@ -111,6 +126,8 @@ export default class EditPost extends Component {
         return (
             <div className="container">
                 <h2 className="mt-5 mb-5">{title}</h2>
+                {!id ? <div className="jumbotron text-center"><h2>Loading...</h2></div> : this.renderImage(id, title) }
+
                 {this.editPostForm(title, body)}
             </div>
         )
