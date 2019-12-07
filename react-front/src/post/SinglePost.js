@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {singlePost, remove} from './apiPost'
+import {singlePost, remove, like, unlike} from './apiPost'
 import {Link, Redirect} from 'react-router-dom'
 import { isAuthenticated } from '../auth'
 
@@ -7,7 +7,15 @@ export default class SinglePost extends Component {
     
     state = {
         post: "",
-        redirectToHome: false
+        redirectToHome: false,
+        like: false,
+        likes: 0
+    }
+
+    checkLike = (likes) => {
+        const userId = isAuthenticated().user._id
+        let match = likes.indexOf(userId) !== -1
+        return match
     }
 
     componentDidMount = () => {
@@ -17,7 +25,29 @@ export default class SinglePost extends Component {
             if(data.error){
                 console.log(data.error)
             } else {
-                this.setState({post: data})  
+                this.setState({
+                    post: data, 
+                    likes: data.likes.length, 
+                    like: this.checkLike(data.likes)
+                })  
+            }
+        })
+    }
+
+    likeToggle = () => {
+        let callApi = this.state.like ? unlike : like
+        const userId = isAuthenticated().user._id
+        const postId = this.state.post._id
+        const token = isAuthenticated().token
+
+        callApi(userId, token, postId).then(data => {
+            if(data.error){
+                console.log(data.error)
+            } else {
+                this.setState({
+                    like: !this.state.like,
+                    likes: data.likes.length
+                })
             }
         })
     }
@@ -44,7 +74,9 @@ export default class SinglePost extends Component {
     renderPost = (post) => {
         const posterId = post.postedBy ? `/user/${post.postedBy._id}` : ""
         const posterName = post.postedBy ? post.postedBy.name : "Unknown"
-        console.log(`post: ${this.state.post}`)
+        
+        const {like, likes} = this.state
+
         return (
             <div className="card-body">
                 <img 
@@ -57,6 +89,9 @@ export default class SinglePost extends Component {
                     className="img-thumbnail mb-3"
                     style={{height:"300px", width:"100%`", objectFit: "cover"}}
                 />
+
+                <h3 onClick={this.likeToggle}>{likes} likes</h3>
+
                 <p className="card-text">{post.body}</p>
                 <br/>
                 <p className="font-italic mark">
