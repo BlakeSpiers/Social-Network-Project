@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import {singlePost, remove, like, unlike} from './apiPost'
 import {Link, Redirect} from 'react-router-dom'
 import { isAuthenticated } from '../auth'
+import Comment from './Comment'
 
 export default class SinglePost extends Component {
     
@@ -10,7 +11,8 @@ export default class SinglePost extends Component {
         redirectToHome: false,
         redirectToSignin: false,
         like: false,
-        likes: 0
+        likes: 0,
+        comments: []
     }
 
     checkLike = (likes) => {
@@ -33,6 +35,10 @@ export default class SinglePost extends Component {
                 })  
             }
         })
+    }
+
+    updateComments = comments => {
+        this.setState({comments})
     }
 
     likeToggle = () => {
@@ -138,7 +144,7 @@ export default class SinglePost extends Component {
     }
 
     render() {
-        const {post, redirectToHome, redirectToSignin} = this.state
+        const {post, redirectToHome, redirectToSignin, comments} = this.state
 
         if(redirectToHome){
             return <Redirect to={`/`} />
@@ -151,6 +157,12 @@ export default class SinglePost extends Component {
                 <h2 className="display-2 mt-5 mb-5">{post.title}</h2>
 
                 {!post ? <div className="jumbotron text-center"><h2>Loading...</h2></div> : this.renderPost(post) }
+
+                <Comment 
+                    postId={post._id} 
+                    comments={comments} 
+                    updateComments={this.updateComments}
+                />
 
             </div>
         )
