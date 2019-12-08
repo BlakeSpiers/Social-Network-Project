@@ -31,7 +31,8 @@ export default class SinglePost extends Component {
                 this.setState({
                     post: data, 
                     likes: data.likes.length, 
-                    like: this.checkLike(data.likes)
+                    like: this.checkLike(data.likes),
+                    comments: data.comments
                 })  
             }
         })
@@ -138,7 +139,7 @@ export default class SinglePost extends Component {
                         </>
                     )}
                     
-                </div>
+                </div>                
             </div>
         )
     }
@@ -157,10 +158,9 @@ export default class SinglePost extends Component {
                 <h2 className="display-2 mt-5 mb-5">{post.title}</h2>
 
                 {!post ? <div className="jumbotron text-center"><h2>Loading...</h2></div> : this.renderPost(post) }
-
                 <Comment 
                     postId={post._id} 
-                    comments={comments} 
+                    comments={comments.reverse()} 
                     updateComments={this.updateComments}
                 />
 
