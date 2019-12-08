@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Redirect} from 'react-router-dom'
+import {Link, Redirect} from 'react-router-dom'
 import {signin, authenticate} from "../auth"
 
 export default class Signin extends Component {
@@ -54,6 +54,13 @@ export default class Signin extends Component {
                 {loading ? <div className="jumbotron text-center"><h2>Loading...</h2></div> : "" }
 
                 {this.signinForm(email, password)}
+
+                <p>
+                    <Link to="/forgot-password" className="text-danger">
+                        {" "}
+                        Forgot Password
+                    </Link>
+                </p>
             </div>
         )
     }
