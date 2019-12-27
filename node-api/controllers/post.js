@@ -7,6 +7,7 @@ exports.postById = (req, res, next, id) => {
     Post.findById(id)
     .populate("postedBy", "_id name")
     .populate("comments.postedBy", "_id name")
+    .populate("postedBy", "_id name role")
     .select('_id title body created likes comments photo')
     .exec((err, post) => {
         if(err || !post){
@@ -70,7 +71,15 @@ exports.postsByUser = (req, res) => {
 };
 
 exports.isPoster = (req, res, next) => {
-    let isPoster = req.post && req.auth && req.post.postedBy._id == req.auth._id;
+    let sameUser = req.post && req.auth && req.post.postedBy._id == req.auth._id
+    let adminUser = req.post && req.auth && req.auth.role === "admin"
+
+    console.log("request.post ", req.post, " req.auth ", req.auth)
+    console.log("SAMEUSER: ", sameUser, " ADMINUSER ", adminUser)
+
+
+    let isPoster = sameUser || adminUser;
+
     if(!isPoster){
         return res.status(403).json({error: "User is not authorized"})
     };
