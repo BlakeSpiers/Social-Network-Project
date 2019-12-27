@@ -14,7 +14,6 @@ export default class Profile extends Component {
         this.state = {
             user: {following: [], followers: []},
             redirectToSignin: false,
-            redirectToHome: false,
             following: false,
             error: '',
             posts: []
@@ -68,9 +67,6 @@ export default class Profile extends Component {
     }
 
     componentDidMount() {
-        if (isAuthenticated().user.role !== "admin") {
-            this.setState({ redirectToHome: true });
-        }
         const userId = this.props.match.params.userId
         this.init(userId)
     }
@@ -83,7 +79,6 @@ export default class Profile extends Component {
     render() {
         const {redirectToSignin, user, posts} = this.state
         if(redirectToSignin) return <Redirect to="/signin" />
-        if (this.state.redirectToHome) return <Redirect to="/" />;
 
         const photoUrl = user._id ? `${process.env.REACT_APP_API_URL}/user/photo/${user._id}?${new Date().getTime()}` : DefaultProfile
 

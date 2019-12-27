@@ -19,13 +19,19 @@ export default class EditPost extends Component {
 
     init = postId => {
         singlePost(postId).then(data => {
-            if(data.error){
-                this.setState({redirectToProfile:true})
+            if (data.error) {
+                this.setState({ redirectToProfile: true });
             } else {
-                this.setState({id: data._id, title: data.title, body: data.body, error: ""})
+                this.setState({
+                    // id is not post.postedBy._id
+                    id: data.postedBy._id,
+                    title: data.title,
+                    body: data.body,
+                    error: ""
+                });
             }
-        })
-    }
+        });
+    };
 
     componentDidMount() {
         this.postData = new FormData()
@@ -129,6 +135,9 @@ export default class EditPost extends Component {
                 {!id ? <div className="jumbotron text-center"><h2>Loading...</h2></div> : this.renderImage(id, title) }
 
                 {this.editPostForm(title, body)}
+                {isAuthenticated().user.role === "admin" ||
+                    (isAuthenticated().user._id === id &&
+                        this.editPostForm(title, body))}
             </div>
         )
     }
