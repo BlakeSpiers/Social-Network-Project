@@ -14,6 +14,7 @@ export default class Profile extends Component {
         this.state = {
             user: {following: [], followers: []},
             redirectToSignin: false,
+            redirectToHome: false,
             following: false,
             error: '',
             posts: []
@@ -67,6 +68,9 @@ export default class Profile extends Component {
     }
 
     componentDidMount() {
+        if (isAuthenticated().user.role !== "admin") {
+            this.setState({ redirectToHome: true });
+        }
         const userId = this.props.match.params.userId
         this.init(userId)
     }
@@ -77,8 +81,9 @@ export default class Profile extends Component {
     }
 
     render() {
-    const {redirectToSignin, user, posts} = this.state
-    if(redirectToSignin) return <Redirect to="/signin" />
+        const {redirectToSignin, user, posts} = this.state
+        if(redirectToSignin) return <Redirect to="/signin" />
+        if (this.state.redirectToHome) return <Redirect to="/" />;
 
         const photoUrl = user._id ? `${process.env.REACT_APP_API_URL}/user/photo/${user._id}?${new Date().getTime()}` : DefaultProfile
 
@@ -111,6 +116,29 @@ export default class Profile extends Component {
                         ) : (
                             <FollowProfileButton following={this.state.following} onButtonClick={this.clickFollowButton}/>
                         )}
+
+                        <div>
+                            {isAuthenticated().user &&
+                                isAuthenticated().user.role === "admin" && (
+                                    <div class="card mt-5">
+                                        <div className="card-body">
+                                            <h5 className="card-title">
+                                                Admin
+                                            </h5>
+                                            <p className="mb-2 text-danger">
+                                                Edit/Delete as an Admin
+                                            </p>
+                                            <Link
+                                                className="btn btn-raised btn-success mr-5"
+                                                to={`/user/edit/${user._id}`}
+                                            >
+                                                Edit Profile
+                                            </Link>
+                                            <DeleteUser userId={user._id} />
+                                        </div>
+                                    </div>
+                                )}
+                        </div>
                     
                     </div>
                 </div>
